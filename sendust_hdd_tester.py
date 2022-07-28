@@ -1,11 +1,14 @@
-
-#  HDD, SSD Write speed test python code by sendust  2022/7/21
+#  HDD, SSD Write speed test python code by sendust  2022/7/28
 #  
 #  usage :
-#     python sendust_hdd_tester.py d:\temp
+#     python sendust_hdd_tester.py "d:/temp"
+#     python sendust_hdd_tester.py "//jungbi2/media"
 #  Press Control-c to stop test
 #
 #  Improve instant speed display
+#
+#  2022 7/28 improve logging (write dirname)
+#            Support UNC path
 #
 #
 #
@@ -51,9 +54,10 @@ def get_free_space_mb(dirname):
 
 if len(sys.argv) >= 2:
     dirname = sys.argv[1]
-    if not os.path.isdir(dirname): 
-        print("Specified argument is not a directory. Bailing out")
-        sys.exit(1)
+    # dirname = dirname.replace("\\", '/')
+    #if not os.path.isdir(dirname): 
+    #    print("Specified argument is not a directory. Bailing out")
+    #    sys.exit(1)
 else:
     # no argument, so use current working directory
     dirname = os.getcwd()
@@ -61,9 +65,20 @@ else:
 
 status_dir = "\nStart New Test........\nTarget folder is " + dirname + "\n" \
     "Free size is " + str(get_free_space_mb(dirname)) + " Mbytes \n"
+
+status_dir += "\nTarget folder is " + dirname + "\n"
     
 print(status_dir)
 updatelog(status_dir)
+
+try:
+    with open(os.path.join(dirname, "writetest.txt"), "a") as the_file:
+        the_file.write("\nFile writing test.........\n")
+except:
+    print("Error writing file... check path or access control")
+    updatelog("Error writing file... check path or access control")
+    sys.exit(1)
+
 
 try:
 
