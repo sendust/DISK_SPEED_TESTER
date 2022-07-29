@@ -1,3 +1,4 @@
+
 #  HDD, SSD Write speed test python code by sendust  2022/7/28
 #  
 #  usage :
@@ -9,7 +10,7 @@
 #
 #  2022 7/28 improve logging (write dirname)
 #            Support UNC path
-#
+#  2022/7/29 Report free space every loop
 #
 #
 
@@ -63,13 +64,13 @@ else:
     dirname = os.getcwd()
     print("Using current working directory")
 
-status_dir = "\nStart New Test........\nTarget folder is " + dirname + "\n" \
+str_report = "\nStart New Test........\nTarget folder is " + dirname + "\n" \
     "Free size is " + str(get_free_space_mb(dirname)) + " Mbytes \n"
 
-status_dir += "\nTarget folder is " + dirname + "\n"
+str_report += "\nTarget folder is " + dirname + "\n"
     
-print(status_dir)
-updatelog(status_dir)
+print(str_report)
+updatelog(str_report)
 
 try:
     with open(os.path.join(dirname, "writetest.txt"), "a") as the_file:
@@ -99,7 +100,7 @@ try:
             else:
                 speed_block = speed_block_prev
             speed_block_prev = speed_block
-            print('[' , i , '] ' , "Instant writing speed: %.2f MB/s           " % (speed_block / 1024 / 1024), end="\r")
+            print('[' , i , '] ' , "Instant writing speed: %.2f MB/s     " % (speed_block / 1024 / 1024), end="\r")
             count += 1
         diff = time.time() - start
         writesize = blocksize * count
@@ -107,8 +108,9 @@ try:
             speed = writesize / diff
         else:
             speed = 0
-        print("Disk writing speed: %.2f Mbytes per second          " % (speed / 1024 / 1024))
-        updatelog("Disk writing speed: %.2f Mbytes per second          " % (speed / 1024 / 1024))
+        str_report = "Disk writing speed: {0:.2f} MB/s  free space is {1:.2f} MB         ".format( speed / 1024 / 1024, get_free_space_mb(dirname))
+        print(str_report)
+        updatelog(str_report)
         hfile.close()
 
 except KeyboardInterrupt:
