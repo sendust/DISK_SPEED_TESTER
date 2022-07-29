@@ -30,7 +30,7 @@ def updatelog(*args, end="\n"):
     if not os.path.exists(os.getcwd() + "\\log"):
         print("path not exist.. make one")
         os.mkdir(os.getcwd() + "\\log")
-    filename_log = os.getcwd() + "\\log\\" + log_prefix + datetime.datetime.now().strftime("%Y-%m-%d") + ".log"
+    filename_log = os.getcwd() + "\\log\\" + log_prefix + datetime.datetime.now().strftime("%Y-%m-%d_[") + str(os.getpid()) + "].log"
     #print("log file name is " + filename_log)
     result = ""
     # date_time = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S ")
@@ -67,8 +67,6 @@ else:
 str_report = "\nStart New Test........\nTarget folder is " + dirname + "\n" \
     "Free size is " + str(get_free_space_mb(dirname)) + " Mbytes \n"
 
-str_report += "\nTarget folder is " + dirname + "\n"
-    
 print(str_report)
 updatelog(str_report)
 
@@ -76,8 +74,8 @@ try:
     with open(os.path.join(dirname, "writetest.txt"), "a") as the_file:
         the_file.write("\nFile writing test.........\n")
 except:
-    print("Error writing file... check path or access control")
-    updatelog("Error writing file... check path or access control")
+    print("Error writing file... check path exist or access control")
+    updatelog("Error writing file... check path exist or access control")
     sys.exit(1)
 
 
@@ -108,7 +106,7 @@ try:
             speed = writesize / diff
         else:
             speed = 0
-        str_report = "Disk writing speed: {0:.2f} MB/s  free space is {1:.2f} MB         ".format( speed / 1024 / 1024, get_free_space_mb(dirname))
+        str_report = "Disk writing speed: {0:.2f} MB/s  free space is {1:.2f} MB".format( speed / 1024 / 1024, get_free_space_mb(dirname))
         print(str_report)
         updatelog(str_report)
         hfile.close()
